@@ -1,0 +1,64 @@
+body {
+    background: #018281;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+#desktop {
+    display:flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.desktop-icon {
+    width: 60px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+.desktop-icon p {
+    color: white;
+    align-self: center;
+    padding: 2px;
+    margin-top: 5px;
+}
+.desktop-icon img {
+    align-self: center;
+}
+
+.desktop-icon:active p {
+    background: #040485;
+}
+
+.window {
+    position: absolute;
+}
+
+ul li img {
+    vertical-align: middle
+}
+
+progress[value] {
+    /* Reset the default appearance */
+    -webkit-appearance: none;
+    appearance: none;
+
+    width: 250px;
+    height: 20px;
+}
+progress[value]::-webkit-progress-bar {
+    padding: 1px 1px;
+    box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+progress[value]::-webkit-progress-value {
+    background: #040485;
+}
+
