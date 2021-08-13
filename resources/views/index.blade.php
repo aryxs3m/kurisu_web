@@ -118,7 +118,7 @@
                     data.forEach(function (row) {
                         //$("#wifilist-treeview").append(`<li><img src="/icons/key_padlock-1.png"> ${row.ssid}</li>`);
                         let icon;
-                        if (row.encryption == 7)
+                        if (row.encryption == 7 || row.encryption == 0)
                         {
                             icon = "globe_map-1.png";
                         }
