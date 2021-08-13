@@ -84,6 +84,10 @@
                                 <span>GPS Longitude: </span><span id="wifilist-details-lon"></span>
                             </div>
                         </fieldset>
+                        <div style="margin-top:10px">
+                            <button onclick="wifiExportCSV()">Export CSV</button>
+                            <button onclick="wifiExportKML()">Export KML</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -254,6 +258,74 @@
                     }
                 });
             }, 1000)
+        }
+
+        function wifiExportCSV()
+        {
+            $.ajax({
+                url: '/api/wifi-list',
+                method: 'GET',
+                success: function (data)
+                {
+                    let lines = "";
+                    let firstLine = true;
+                    data.forEach(function(row){
+                        if (firstLine)
+                        {
+                            let lineData = [];
+                            for (const [key, value] of Object.entries(row)) {
+                                lineData.push(key);
+                            }
+                            lines += lineData.join(";") + "\n";
+                            firstLine = false;
+                        }
+
+                        let lineData = [];
+                        for (const [key, value] of Object.entries(row)) {
+                            lineData.push(value);
+                        }
+                        lines += lineData.join(";") + "\n";
+                    });
+                    download("kurisu_csv_export.csv", lines);
+                }
+            })
+        }
+
+        function wifiExportKML()
+        {
+            $.ajax({
+                url: '/api/wifi-list',
+                method: 'GET',
+                success: function (data)
+                {
+                    let lines = '<\?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+                    let firstLine = true;
+                    data.forEach(function(row){
+                        lines += `<Placemark>
+                                        <name>${row.ssid}</name>
+                                        <description>BSSID: ${row.bssid}</description>
+                                        <Point>
+                                          <coordinates>${row.longitude},${row.latitude}</coordinates>
+                                        </Point>
+                                      </Placemark>` + "\n";
+                    });
+                    lines += "</Document></kml>";
+                    download("kurisu_kml_export.kml", lines);
+                }
+            })
+        }
+
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
         }
 
         function wifiWindowScript()
