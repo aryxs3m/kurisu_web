@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="window" style="width: 300px" id="id1" hidden>
+    <div class="window" style="width: 800px;" id="id1" hidden>
         <div class="title-bar" id="id1header">
             <div class="title-bar-text">WiFi List</div>
             <div class="title-bar-controls">
@@ -29,7 +29,17 @@
             </div>
         </div>
         <div class="window-body">
-            <ul class="tree-view" id="wifilist-treeview"></ul>
+            <div class="row">
+                <ul class="tree-view" style="height: 300px;" id="wifilist-treeview"></ul>
+                {{--<div class="column">
+                    <ul class="tree-view" style="height: 300px;" id="wifilist-treeview"></ul>
+                </div>
+                <div class="column">
+                    <div style="padding-left:10px">
+                        <pre></pre>
+                    </div>
+                </div>--}}
+            </div>
         </div>
     </div>
 
@@ -110,7 +120,7 @@
                         let icon;
                         if (row.encryption == 7)
                         {
-                            icon = "open.png";
+                            icon = "globe_map-1.png";
                         }
                         else
                         {
