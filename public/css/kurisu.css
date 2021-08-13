@@ -26,6 +26,7 @@ body {
     padding: 5px;
     display: flex;
     flex-direction: column;
+    text-align: center;
 }
 .desktop-icon p {
     color: white;
@@ -86,4 +87,17 @@ div.border {
     content: "";
     display: table;
     clear: both;
+}
+
+.window-msgbox {
+    text-align: center;
+}
+.window-msgbox img {
+    position: absolute;
+    left: 12px;
+    top: 32px;
+}
+.window-msgbox p {
+    padding-top:7px;
+    margin-bottom: 22px;
 }

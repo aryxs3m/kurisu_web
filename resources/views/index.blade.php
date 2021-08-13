@@ -24,6 +24,10 @@
             <img src="/icons/computer_taskmgr-0.png" alt="Diagnostics">
             <p>Diagnostics</p>
         </div>
+        <div class="desktop-icon" ondblclick="openWindow('id5', settingsWindowScript)">
+            <img src="/icons/directory_control_panel-4.png" alt="Settings">
+            <p>Settings</p>
+        </div>
     </div>
 
     <div class="window" style="width: 800px;" id="id1" hidden>
@@ -142,6 +146,51 @@
         </div>
     </div>
 
+    <div class="window" style="width: 300px;" id="id5" hidden>
+        <div class="title-bar" id="id5header">
+            <div class="title-bar-text"><img src="/icons/directory_control_panel-5.png" alt="GPS"> Settings</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" class="window-close-btn"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="field-row">
+                <input checked type="checkbox" id="settings-publicip">
+                <label for="settings-publicip">Get WAN IP Address from Open Networks</label>
+            </div>
+            <div class="field-row">
+                <input checked type="checkbox" id="settings-autosync">
+                <label for="settings-autosync">Enable Autosync</label>
+            </div>
+            <div class="field-row-stacked">
+                <label for="settings-autosync-interval">Autosync Interval</label>
+                <select id="settings-autosync-interval">
+                    <option value="0">Every 5 seconds</option>
+                    <option value="12">Every minute</option>
+                    <option value="60">Every 5 minutes</option>
+                    <option value="120">Every 10 minutes</option>
+                </select>
+            </div>
+            <div class="field-row">
+                <button onclick="saveSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="window window-msgbox" style="width: 300px;" id="idInfo" hidden>
+        <div class="title-bar" id="idInfoheader">
+            <div class="title-bar-text">Information</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" class="window-close-btn"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <img src="/icons/msg_information-0.png" alt="Information">
+            <p>Settings saved. Don't forget to sync!</p>
+            <button onclick="closeWindow('idInfo')">OK</button>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
 
@@ -153,7 +202,10 @@
             $(".window-close-btn").on('click', function (){
                 $(this).closest('.window').prop('hidden', true);
             })
-
+            $(".window").on('mousedown', function(){
+                $(".window").css('z-index', 1);
+                $(this).css('z-index', 2);
+            })
             $(".window").each(function (i){
                 dragElement($(this)[0]);
             })
@@ -177,6 +229,15 @@
                 if (customScript) {
                     customScript();
                 }
+
+                let left = ($(window).width() / 2) - ($("#" + windowId).width() / 2);
+                let top = ($(window).height() / 2) - ($("#" + windowId).height() / 2);
+                $(".window").css('z-index', 1);
+                $("#" + windowId)
+                    .css('left', left)
+                    .css('top', top)
+                    .css('z-index', 2);;
+
                 document.getElementById(windowId).hidden = false;
                 document.body.style.cursor = "auto";
             }, 200);
@@ -185,6 +246,42 @@
         function closeWindow(windowId)
         {
             document.getElementById(windowId).hidden = true;
+        }
+
+        function settingsWindowScript()
+        {
+            $.ajax({
+                url: '/api/config-get',
+                method: 'GET',
+                success: function (data)
+                {
+                    $("#settings-publicip").prop('checked', data.publicip);
+                    $("#settings-autosync").prop('checked', data.autosync);
+                    $("#settings-autosync-interval").val(data.autosync_interval);
+                }
+            })
+        }
+
+        function saveSettings()
+        {
+            let publicip = $("#settings-publicip").prop('checked') ? 1 : 0;
+            let autosync = $("#settings-autosync").prop('checked') ? 1 : 0;
+            let autosync_interval = $("#settings-autosync-interval").val();
+
+            $.ajax({
+                url: '/api/config-save',
+                method: 'POST',
+                data: {
+                    publicip,
+                    autosync,
+                    autosync_interval
+                },
+                success: function (data)
+                {
+                    closeWindow('id5')
+                    openWindow("idInfo");
+                }
+            })
         }
 
         function gpsWindowScript()
