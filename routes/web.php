@@ -20,7 +20,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/import', 'KurisuMasterController@import');
     $router->post('/diagnostics', 'KurisuMasterController@saveDiagnostics');
-    $router->post('/config', 'KurisuMasterController@getConfig');
+    $router->get('/config', 'KurisuMasterController@getConfig');
 
     $router->get('/wifi-list', 'DesktopController@wifiList');
     $router->get('/diag-data', 'DesktopController@diagData');
