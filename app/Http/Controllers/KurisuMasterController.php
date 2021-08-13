@@ -37,9 +37,9 @@ class KurisuMasterController extends Controller
     {
         try
         {
-            $EEPROM_SETTINGS_GET_PUBLICIP = Setting::find('EEPROM_SETTINGS_GET_PUBLICIP')->first()->value;
-            $EEPROM_SETTINGS_AUTO_SYNC = Setting::find('EEPROM_SETTINGS_AUTO_SYNC')->first()->value;
-            $EEPROM_SETTINGS_AUTO_SYNC_INTERVAL = Setting::find('EEPROM_SETTINGS_AUTO_SYNC_INTERVAL')->first()->value;
+            $EEPROM_SETTINGS_GET_PUBLICIP = Setting::where('key', 'EEPROM_SETTINGS_GET_PUBLICIP')->first()->value;
+            $EEPROM_SETTINGS_AUTO_SYNC = Setting::where('key', 'EEPROM_SETTINGS_AUTO_SYNC')->first()->value;
+            $EEPROM_SETTINGS_AUTO_SYNC_INTERVAL = Setting::where('key', 'EEPROM_SETTINGS_AUTO_SYNC_INTERVAL')->first()->value;
 
             return "{$EEPROM_SETTINGS_GET_PUBLICIP};{$EEPROM_SETTINGS_AUTO_SYNC};{$EEPROM_SETTINGS_AUTO_SYNC_INTERVAL};";
         } catch (\Error $exception) {
