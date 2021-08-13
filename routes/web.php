@@ -23,4 +23,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('/wifi-list', 'DesktopController@wifiList');
     $router->get('/diag-data', 'DesktopController@diagData');
+    $router->get('/diag-history', 'DesktopController@diagHistory');
 });

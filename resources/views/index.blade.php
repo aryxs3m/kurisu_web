@@ -46,6 +46,23 @@
             <p>Last sync: <span id="diag-last-sync"></span></p>
             <p>Last battery level: <span id="diag-last-battery"></span></p>
             <progress max="100" value="0" id="diag-last-battery-percent" style="width: 100%"></progress>
+
+            <div style="margin-top:10px">
+                <button onclick="diagWindowScript()">Refresh</button>
+                <button onclick="openWindow('id3', diagHistoricalWindowScript)">Historical Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" style="width: 300px" id="id3" hidden>
+        <div class="title-bar" id="id3header">
+            <div class="title-bar-text">Historical Diagnostics Data</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" class="window-close-btn"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <ul class="tree-view" id="historical-treeview" style="height: 300px"></ul>
         </div>
     </div>
 
@@ -89,7 +106,32 @@
                 success: function (data)
                 {
                     data.forEach(function (row) {
-                        $("#wifilist-treeview").append(`<li><img src="/icons/key_padlock-1.png"> ${row.ssid}</li>`);
+                        //$("#wifilist-treeview").append(`<li><img src="/icons/key_padlock-1.png"> ${row.ssid}</li>`);
+                        let icon;
+                        if (row.encryption == 7)
+                        {
+                            icon = "open.png";
+                        }
+                        else
+                        {
+                            icon = "key_padlock-1.png";
+                        }
+                        $("#wifilist-treeview").append(`<li><a href="#"><img src="/icons/${icon}">&nbsp;&nbsp;&nbsp;${row.bssid}&nbsp;&nbsp;&nbsp;${row.ssid}</a></li>`);
+                    })
+                }
+            })
+        }
+
+        function diagHistoricalWindowScript()
+        {
+            $("#historical-treeview").empty();
+            $.ajax({
+                url: '/api/diag-history',
+                method: 'GET',
+                success: function (data)
+                {
+                    data.forEach(function (row) {
+                        $("#historical-treeview").append(`<li>${row.created_at} ${row.battery_level} V</li>`);
                     })
                 }
             })

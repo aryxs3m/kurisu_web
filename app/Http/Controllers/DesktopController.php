@@ -20,4 +20,9 @@ class DesktopController extends Controller
             'lastbattery' => Diagnostics::latest()->first()->battery_level
         ]);
     }
+
+    public function diagHistory()
+    {
+        return Diagnostics::all();
+    }
 }
