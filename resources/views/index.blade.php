@@ -30,7 +30,7 @@
         </div>
         <div class="window-body">
             <div class="row">
-                <ul class="tree-view" style="height: 300px;" id="wifilist-treeview"></ul>
+                <ul class="tree-view" style="height: 300px;overflow-y: auto;" id="wifilist-treeview"></ul>
                 {{--<div class="column">
                     <ul class="tree-view" style="height: 300px;" id="wifilist-treeview"></ul>
                 </div>
