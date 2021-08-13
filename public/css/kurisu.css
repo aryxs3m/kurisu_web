@@ -9,6 +9,12 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+.title-bar-text img {
+    vertical-align: sub;
+    padding-left: 2px;
+    padding-right: 3px;
+}
+
 #desktop {
     display:flex;
     flex-direction: column;
