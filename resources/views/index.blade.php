@@ -191,6 +191,8 @@
         </div>
     </div>
 
+    <audio src="/audio/ding.mp3" id="win-sound-ding"></audio>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
 
@@ -248,6 +250,11 @@
             document.getElementById(windowId).hidden = true;
         }
 
+        function playDing()
+        {
+            document.getElementById("win-sound-ding").play();
+        }
+
         function settingsWindowScript()
         {
             $.ajax({
@@ -279,7 +286,7 @@
                 success: function (data)
                 {
                     closeWindow('id5')
-                    openWindow("idInfo");
+                    openWindow("idInfo", playDing);
                 }
             })
         }
