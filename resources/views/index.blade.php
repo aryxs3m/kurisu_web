@@ -28,6 +28,10 @@
             <img src="/icons/directory_control_panel-4.png" alt="Settings">
             <p>Settings</p>
         </div>
+        <div class="desktop-icon" ondblclick="openWindow('id6', exportsWindowScript)">
+            <img src="/icons/directory_closed-3.png" alt="Exports">
+            <p>Exports</p>
+        </div>
     </div>
 
     <div class="window" style="width: 800px;" id="id1" hidden>
@@ -177,6 +181,18 @@
         </div>
     </div>
 
+    <div class="window" id="id7" hidden>
+        <div class="title-bar" id="id7header">
+            <div class="title-bar-text"><img src="/icons/notepad_file-1.png" alt="Notepad"> Notepad</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" class="window-close-btn"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <textarea id="notepad-textarea" cols="60" rows="20"></textarea>
+        </div>
+    </div>
+
     <div class="window window-msgbox" style="width: 300px;" id="idInfo" hidden>
         <div class="title-bar" id="idInfoheader">
             <div class="title-bar-text">Information</div>
@@ -191,6 +207,23 @@
         </div>
     </div>
 
+    <div class="window" id="id6" hidden>
+        <div class="title-bar" id="id6header">
+            <div class="title-bar-text"><img src="/icons/directory_closed-1.png" alt="GPS"> Exports</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" class="window-close-btn"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="explorer" id="exports-explorer" style="width: 700px; height: 300px">
+                <div class="desktop-icon" ondblclick="openWindow('id7', exportsReadmeWindow)">
+                    <img src="/icons/notepad_file-0.png" alt="Readme">
+                    <p>README.txt</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <audio src="/audio/ding.mp3" id="win-sound-ding"></audio>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -201,6 +234,15 @@
         var encTypes = ['Open', 'Unknown (1)', 'WPA TKIP', 'Unknown (3)', 'WPA CCMP', 'WEP', 'Unknown (6)', 'Open', 'Auto'];
 
         $(document).ready(function(){
+            if (localStorage.getItem("filesystem") == null)
+            {
+                localStorage.setItem("filesystem", JSON.stringify([{
+                    filename: "README.txt",
+                    data: "When you make a CSV or KML export, the file contents are saved tou your browser's local storage.\n" +
+                        "You can re-download these from here."
+                }]));
+            }
+
             $(".window-close-btn").on('click', function (){
                 $(this).closest('.window').prop('hidden', true);
             })
@@ -221,6 +263,20 @@
             })
             $(".wifilist-filter").on("click", function(){
                 wifiWindowScript();
+            });
+            $("#exports-explorer").on('dblclick', ".explorer-icon", function(){
+                let thisIcon = $(this);
+                switch (thisIcon.data('action'))
+                {
+                    case "notepad":
+                        openWindow('id7');
+                        $("#notepad-textarea").val(getFileContents(thisIcon.data('filename')));
+                        break;
+
+                    case "download":
+                        download(thisIcon.data('filename'), getFileContents(thisIcon.data('filename')), true);
+                        break;
+                }
             });
         })
 
@@ -253,6 +309,59 @@
         function playDing()
         {
             document.getElementById("win-sound-ding").play();
+        }
+
+        function getFileContents(filename)
+        {
+            let data = localStorage.getItem('filesystem');
+            if (data == null) {
+                return "";
+            }
+
+            let contents = null;
+
+            JSON.parse(data).forEach(function(file){
+                if (file.filename == filename)
+                {
+                    contents = file.data;
+                }
+            })
+
+            return contents;
+        }
+
+        function exportsWindowScript()
+        {
+            let explorer = $("#exports-explorer");
+            explorer.empty();
+            let data = localStorage.getItem('filesystem');
+            if (data != null)
+            {
+                JSON.parse(data).forEach(function(file){
+                    let icon = "file_windows-0.png";
+                    let action = "download";
+
+                    if (file.filename.endsWith(".csv")) {
+                        icon = "excel.png";
+                    }
+                    else if (file.filename.endsWith(".txt")) {
+                        icon = "notepad_file-0.png";
+                        action = "notepad";
+                    }
+
+                    explorer.append(`<div class="desktop-icon explorer-icon" data-action="${action}" data-filename="${file.filename}">
+                                        <img src="/icons/${icon}" alt="${action}">
+                                        <p>${file.filename}</p>
+                                    </div>`);
+                })
+            }
+        }
+
+        function exportsReadmeWindow()
+        {
+            $("#notepad-textarea")
+                .val("When you make a CSV or KML export, the file contents are saved tou your browser's local storage.\n" +
+                    "You can re-download these from here.");
         }
 
         function settingsWindowScript()
@@ -419,7 +528,7 @@
             })
         }
 
-        function download(filename, text) {
+        function download(filename, text, redownload = false) {
             var element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
             element.setAttribute('download', filename);
@@ -430,6 +539,30 @@
             element.click();
 
             document.body.removeChild(element);
+
+            if (!redownload) {
+                saveLocalStorage(filename, text);
+            }
+        }
+
+        function saveLocalStorage(filename, data)
+        {
+            if (localStorage.getItem('filesystem') == null)
+            {
+                localStorage.setItem('filesystem', JSON.stringify([{
+                    filename,
+                    data
+                }]));
+            }
+            else
+            {
+                let prevData = JSON.parse(localStorage.getItem('filesystem'));
+                prevData.push({
+                    filename,
+                    data
+                });
+                localStorage.setItem('filesystem', JSON.stringify(prevData));
+            }
         }
 
         function wifiWindowScript()
