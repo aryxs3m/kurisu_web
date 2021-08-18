@@ -116,3 +116,6 @@ div.border {
     padding-top:7px;
     margin-bottom: 22px;
 }
+.tree-view {
+    overflow: auto;
+}
