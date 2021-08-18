@@ -637,7 +637,14 @@
                 {
                     $("#diag-last-sync").html(data.lastsync);
                     $("#diag-last-battery").html(data.lastbattery + " V");
-                    $("#diag-last-battery-percent").val(data.lastbattery / 4.2 * 100);
+
+                    let max = 4.2;
+                    let min = 2.9; // last measured voltage before the device got offline. TODO: needs more precise test
+                    let range = max - min;
+                    let correctedStartValue = data.lastbattery - min;
+                    let percentage = (correctedStartValue * 100) / range;
+
+                    $("#diag-last-battery-percent").val(percentage);
                 }
             })
         }
